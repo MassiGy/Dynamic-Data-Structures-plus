@@ -9,7 +9,7 @@ Type
     next : node;
   End;
 
-Var head: node;
+Var head, el: node;
 
 
 
@@ -166,6 +166,32 @@ Begin
 End;
 
 
+procedure insert_after_position(var list, element: node; position: integer);
+  var tmp:node;
+  var counter: integer;
+begin
+  if(list = nil) then 
+    begin
+      list:=element;
+      exit;
+    end;
+  if(position >= list_length(list)) then
+    begin
+      push(list, element);
+      exit;
+    end; 
+  tmp:=list;
+  counter:=1;
+  While(counter<position) Do
+    begin
+      tmp:=tmp^.next;
+      counter:=counter+1;
+    end;
+  element^.next:=tmp^.next;
+  tmp^.next:=element;
+end;
+
+
 
 procedure free(var list: node);
  var tmp:node;
@@ -192,8 +218,8 @@ end;
 Begin
   fill_From_End(head);
   print_list(head);
-  writeln('length is equal to : ', list_length(head));
-  writeln('the shifted node s data is ',shift(head)^.value);
+  nodeMaker(el);
+  insert_after_position(head,el,2);
   print_list(head);
   writeln('length is equal to : ', list_length(head));
   
