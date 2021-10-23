@@ -64,6 +64,23 @@ Begin
 End;
 
 
+function pop(var list:node):node;
+  var tmp:node;
+begin
+  if(list  = nil ) then exit;
+  if(list^.next = nil) then 
+    begin
+      pop:=list;
+      list:=nil;
+      exit;
+    end;
+  tmp:=list;
+  While(tmp^.next^.next<>nil) Do tmp:=tmp^.next;
+  pop:=tmp^.next;
+  tmp^.next:=nil;
+end;
+
+
 Procedure unshift(Var list, element: node);
 Begin
   If (list = Nil) Then
@@ -75,6 +92,22 @@ Begin
   list := element;
 End;
 
+function shift(var list:node):node;
+  var tmp: node;
+begin
+  if(list = nil ) then exit;
+  if(list^.next = nil) then 
+    begin
+      shift:=list;
+      list:=nil;
+      exit
+    end;
+  tmp:=list^.next;
+  shift:=list;
+  list:=tmp;
+
+  shift^.next:=nil;
+end;
 
 
 Procedure fill_From_End(Var list: node);
@@ -160,7 +193,11 @@ Begin
   fill_From_End(head);
   print_list(head);
   writeln('length is equal to : ', list_length(head));
-
+  writeln('the shifted node s data is ',shift(head)^.value);
+  print_list(head);
+  writeln('length is equal to : ', list_length(head));
+  
+  
 
   free(head);
 End.
