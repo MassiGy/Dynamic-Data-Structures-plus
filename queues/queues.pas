@@ -1,5 +1,5 @@
 
-Program singleLinkedLists;
+Program queues;
 
 
 Type 
@@ -64,34 +64,6 @@ Begin
 End;
 
 
-function pop(var list:node):node;
-  var tmp:node;
-begin
-  if(list  = nil ) then exit;
-  if(list^.next = nil) then 
-    begin
-      pop:=list;
-      list:=nil;
-      exit;
-    end;
-  tmp:=list;
-  While(tmp^.next^.next<>nil) Do tmp:=tmp^.next;
-  pop:=tmp^.next;
-  tmp^.next:=nil;
-end;
-
-
-Procedure unshift(Var list, element: node);
-Begin
-  If (list = Nil) Then
-    Begin
-      list := element;
-      exit;
-    End;
-  element^.next := list;
-  list := element;
-End;
-
 function shift(var list:node):node;
   var tmp: node;
 begin
@@ -125,24 +97,6 @@ Begin
       push(list, element);
     End;
 End;
-
-Procedure fill_From_Top(Var list: node);
-
-Var 
-  length , counter: integer;
-  element: node;
-Begin
-  list := Nil;
-  writeln('what is the length of you new list');
-  readln(length);
-  For counter := 1 To length Do
-    Begin
-      nodeMaker(element);
-      unshift(list, element);
-    End;
-
-End;
-
 
 
 
@@ -192,12 +146,5 @@ end;
 Begin
   fill_From_End(head);
   print_list(head);
-  writeln('length is equal to : ', list_length(head));
-  writeln('the shifted node s data is ',shift(head)^.value);
-  print_list(head);
-  writeln('length is equal to : ', list_length(head));
-  
-  
-
   free(head);
 End.
