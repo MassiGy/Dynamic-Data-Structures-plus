@@ -245,18 +245,50 @@ begin
 end;
 
 
+function find(var list: node; val: integer):node;
+  var tmp: node;
+begin
+  find:=nil;
+
+  if(list = nil) then exit;
+  if((list^.next = nil) and (list^.value <> val)) then exit;
+
+  // walk trough the list until the end, or until we find the correct val
+  tmp:=list;
+  while((tmp^.next <> nil )and(tmp^.value <> val)) Do tmp:=tmp^.next;
+  // case analytics
+  if( tmp^.value = val )then 
+    begin
+      find:=tmp;
+      exit;
+    end; 
+  if(tmp^.next = nil)then  
+    begin
+      if(tmp^.value <> val ) then exit;
+      if(tmp^.value = val )  then
+        begin
+          find:=tmp;
+          exit;
+        end;
+    end;
+end;
+
+
+
 procedure splice_after_position(var list: node; position, elcount: integer);
   var begining, ending, tmp:node;
   var counter:integer;
 begin
   if(list = nil) then exit;
   if(elcount = 0) then exit;
-  if(position >= list_length(list)) then exit;
   if((list^.next = nil)and (position = 1)) then
     begin
       shift(list);
       exit;
     end;
+  if(position >= list_length(list)) then exit;
+
+
   // go to the position;
   // set begining and ending to the node after the element at the given position
   // walktrough the list with the pointer ending elcount times
@@ -295,10 +327,6 @@ end;
 Begin
   fill_From_End(head);
   print_list(head);
-  splice_after_position(head,1,2);
-  print_list(head);
-  writeln('length is equal to : ', list_length(head));
-  
   
 
   free(head);
