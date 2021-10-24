@@ -48,6 +48,32 @@ End;
 
 
 
+
+
+procedure free(var list: node);
+ var tmp:node;
+begin
+  if(list = nil) then exit;
+  if(list^.next = nil ) then
+    begin
+      dispose(list);
+      exit;
+    end;
+  // freeing all the node of the list, by seting tmp as a pointer to one element after the head
+  // then disposing the head, and move the tmp one step further again, 
+  // repeat this processing until all the nodes are freed one after the other
+  tmp:=list^.next;
+  While(list <> nil)Do
+    begin
+      dispose(list);
+      list:=tmp;
+      if(tmp<>nil) then tmp:=tmp^.next;
+      writeln('freed')
+    end;
+end;
+
+
+
 Procedure push(Var list: node; element: node);
 
 Var tmp : node;
@@ -192,34 +218,84 @@ begin
 end;
 
 
-
-procedure free(var list: node);
- var tmp:node;
+procedure replace(var list: node; val, newVal: integer);
+  var tmp: node;
 begin
   if(list = nil) then exit;
-  if(list^.next = nil ) then
+  if((list^.next = nil) and (list^.value <> val)) then exit;
+
+  // walk trough the list until the end, or until we find the correct val
+  tmp:=list;
+  while((tmp^.next <> nil )and(tmp^.value <> val)) Do tmp:=tmp^.next;
+  // case analytics
+  if( tmp^.value = val )then 
     begin
-      dispose(list);
+      tmp^.value:=newVal;
       exit;
-    end;
-  
-  tmp:=list^.next;
-  While(list <> nil)Do
+    end; 
+  if(tmp^.next = nil)then  
     begin
-      dispose(list);
-      list:=tmp;
-      if(tmp<>nil) then tmp:=tmp^.next;
-      writeln('freed')
+      if(tmp^.value <> val ) then exit;
+      if(tmp^.value = val )  then
+        begin
+          tmp^.value:=newVal;
+          exit;
+        end;
     end;
 end;
+
+
+procedure splice_after_position(var list: node; position, elcount: integer);
+  var begining, ending, tmp:node;
+  var counter:integer;
+begin
+  if(list = nil) then exit;
+  if(elcount = 0) then exit;
+  if(position >= list_length(list)) then exit;
+  if((list^.next = nil)and (position = 1)) then
+    begin
+      shift(list);
+      exit;
+    end;
+  // go to the position;
+  // set begining and ending to the node after the element at the given position
+  // walktrough the list with the pointer ending elcount times
+  // now the ending is elcount steps away from the begining pointer
+  // set the begining next pointer feild to the ending next pointer value
+
+  // tmp will helps us to keep track of the spliced chunk of the list;
+  // in order to display it, for debugging purpuses, and more importantly 
+  // to free it.
+
+  begining:=list;
+  counter:=1;
+  while(counter<position) Do
+    begin
+      begining:=begining^.next;
+      counter:=counter+1;
+    end;
+  ending:=begining;
+  counter:=0;
+  while(counter<elcount)do 
+    begin
+      ending:=ending^.next;
+      counter:=counter+1;
+    end;
+  
+  tmp:=begining^.next;
+  begining^.next:=ending^.next;
+  ending^.next:=nil;
+  free(tmp);
+  ending:=nil;
+end;
+
 
 
 
 Begin
   fill_From_End(head);
   print_list(head);
-  nodeMaker(el);
-  insert_after_position(head,el,2);
+  splice_after_position(head,1,2);
   print_list(head);
   writeln('length is equal to : ', list_length(head));
   
