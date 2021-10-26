@@ -13,7 +13,8 @@ Type
 
 
 Var head, el: node;
-var counter, nodecount:integer;
+
+Var counter, nodecount: integer;
 
 
 
@@ -36,19 +37,19 @@ End;
 // and we need to do this in the left and the right side
 // then at the end return the max of these values.
 
-function max(x, y : integer):integer;
-begin
-  if(x>y) then max:=x
-  else max:=y;
-end;
+Function max(x, y : integer): integer;
+Begin
+  If (x>y) Then max := x
+  Else max := y;
+End;
 
 
 
-function tree_length(head: node): integer;
-begin
-  if(head= nil) then tree_length:=0
-  else tree_length:=1 + max(tree_length(head^.left), tree_length(head^.right));   
-end;
+Function tree_length(head: node): integer;
+Begin
+  If (head= Nil) Then tree_length := 0
+  Else tree_length := 1 + max(tree_length(head^.left), tree_length(head^.right));
+End;
 
 
 
@@ -125,6 +126,76 @@ Begin
 End;
 
 
+// algorithm that deletes one node on the tree
+// if we want to delete a node without generating a conflict in the tree initial sort we can
+// check if the node is  a leaf, if so just free it,
+// if not,  the node is a parent
+// so, just move up the left son as the new parent node, 
+// if the left son of the parent is nil, just move up the right son as the new parent
+// if the right son of the parent is nil, just move up the left son as the new parent
+// if the right and the left son are not equal to nil;
+// we know that the left side is always smaller then the right one,
+// so all we need to do is to put the right sub-tree (right son) as the new parent,
+// then append (insert at the end) the left sub tree to this new parent
+
+
+
+Procedure delete(Var head: node; query: integer);
+
+Var tmp, tmp2: node;
+Begin
+  If (head= Nil) Then exit;
+  If ((head^.right = Nil)And(head^.left = Nil )And (head^.value <> query)) Then exit;
+  If ((head^.right = Nil)And(head^.left = Nil )And (head^.value = query)) Then
+    Begin
+      dispose(head);
+      head := Nil;
+      exit;
+    End;
+  If (((head^.right <> Nil)or(head^.left <> Nil ))and (head^.value = query)) Then
+    Begin
+      If ((head^.right = Nil)And(head^.left <> Nil )) Then
+        Begin
+          tmp := head^.left;
+          dispose(head);
+          head := tmp;
+          exit;
+        End;
+      If ((head^.right <> Nil)And(head^.left = Nil )) Then
+        Begin
+          tmp := head^.right;
+          dispose(head);
+          head := tmp;
+          exit;
+        End;
+      If ((head^.right <> Nil)And(head^.left <> Nil )) Then
+        Begin
+          tmp := head^.left;
+          tmp2 := head^.right;
+          dispose(head);
+          insert(tmp2, tmp);
+          head := tmp2;
+          exit;
+        End;
+    End;
+
+
+  delete(head^.left, query);
+  delete(head^.right, query);
+
+
+End;
+
+
+
+
+
+
+
+
+
+
+
 // algorithm that destroyes a entire tree/ O(log(n))
 Procedure free(Var tree: node);
 // the idea is to free up the left son then the right son, then the parent node,
@@ -143,7 +214,7 @@ Begin
   If (tree= Nil) Then exit;
   If ((tree^.left= Nil)And (tree^.right= Nil)) Then
     Begin
-      writeln('destroyed data :', tree^.value);
+      writeln('destroyed value :', tree^.value);
       dispose(tree);
       exit;
     End
@@ -153,8 +224,8 @@ Begin
       free(tree^.left);
       free(tree^.right);
     End;
-      writeln('destroyed data :', tree^.value);
-    dispose(tree);
+  writeln('destroyed value :', tree^.value);
+  dispose(tree);
 End;
 
 
@@ -167,15 +238,21 @@ Begin
   head := Nil;
   writeln('how many nodes your tree will containe');
   readln(nodecount);
-  for counter := 1 to nodecount do
-      begin
-          treeMaker(el);
-          insert(head,el);
-      end;
+  For counter := 1 To nodecount Do
+    Begin
+      treeMaker(el);
+      insert(head,el);
+    End;
+  writeln('');
+  print_tree_inOrder(head);
+  writeln('');
+  writeln('the tree length is ', tree_length(head));
+  delete(head, 3);
   writeln('');
   print_tree_inOrder(head);
   writeln('');
   writeln('the tree length is ', tree_length(head));
   free(head);
 
+  el:=nil;
 End.
