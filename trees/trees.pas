@@ -27,6 +27,32 @@ Begin
   node^.right := Nil;
 End;
 
+// algorithm that calculates the length of a tree with recursion
+// the length of a binary tree is the max between the lenght of the 
+// right side and the lenght of the left side
+
+// so we need to build an algorithm that is going deep in the tree
+// and increment how many level this one containes 
+// and we need to do this in the left and the right side
+// then at the end return the max of these values.
+
+function max(x, y : integer):integer;
+begin
+  if(x>y) then max:=x
+  else max:=y;
+end;
+
+
+
+function tree_length(head: node): integer;
+begin
+  if(head= nil) then tree_length:=0
+  else tree_length:=1 + max(tree_length(head^.left), tree_length(head^.right));   
+end;
+
+
+
+
 // algorithm that inserts a node to an entire tree/ O(log(n))
 
 Procedure insert(Var head, el: node);
@@ -141,7 +167,7 @@ Begin
   head := Nil;
   writeln('how many nodes your tree will containe');
   readln(nodecount);
-  for counter := 0 to nodecount do
+  for counter := 1 to nodecount do
       begin
           treeMaker(el);
           insert(head,el);
@@ -149,7 +175,7 @@ Begin
   writeln('');
   print_tree_inOrder(head);
   writeln('');
-
+  writeln('the tree length is ', tree_length(head));
   free(head);
 
 End.
