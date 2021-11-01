@@ -13,8 +13,12 @@ Type
   End;
 
 Var head: node;
-
 Var data : Pchar;
+
+
+
+
+
 
 Procedure trieMaker(Var el: node; val: char);
 
@@ -103,5 +107,5 @@ Begin
   head := Nil;
   trieMaker(head,'#');
   insert(head, 'DATA');
-  writeln(find_in_trie(head,'D'));
+  writeln(find_in_trie(head,'A'));
 End.
