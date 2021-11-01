@@ -199,7 +199,7 @@ begin
       else 
         begin
           writeln('CAUTION: This is not a leaf, all the data that begins with the given query: "', query,'" will be erased!');
-          writeln('PROMPT: do you want to delete it any way? y/n');
+          writeln('PROMPT : do you want to delete it any way? y/n');
           readln(answer);
           if(answer = 'n') then exit;
           if(answer = 'y') then
